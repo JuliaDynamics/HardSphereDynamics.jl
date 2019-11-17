@@ -1,0 +1,51 @@
+
+"""
+	FixedPlane{N,T}
+
+Fixed `N`-dimensional hyperplane.
+
+- `p`: point on the plane
+- `n`: normal vector
+"""
+struct FixedPlane{N,T}
+    p::SVector{N,T}
+    n::SVector{N,T}
+end
+
+normal(p::FixedPlane, x) = p.n
+
+
+"""
+"Rectangular" box in N dimensions.
+
+`lower` and `upper` contain the lower and upper bounds in each dimension.
+"""
+struct RectangularBox{N,T}
+    lower::SVector{N,T}
+    upper::SVector{N,T}
+    walls::Vector{FixedPlane{N,T}}
+
+    function RectangularBox{N,T}(lower::SVector{N,T}, upper::SVector{N,T}) where {N,T}
+
+        z = zero(SVector{N,T})
+
+        walls = FixedPlane{N,T}[]
+
+        for i in 1:N
+            n = setindex(z, -1, i)
+
+            push!(walls, FixedPlane(lower, n))
+            push!(walls, FixedPlane(upper, -n))
+        end
+
+        new{N,T}(lower, upper, walls)
+    end
+end
+
+RectangularBox(lower::SVector{N,T}, upper::SVector{N,T}) where {N,T} = RectangularBox{N,T}(lower, upper)
+
+
+
+function unit_hypercube(N, T)
+	return RectangularBox(zero(SVector{N,T}), @SVector ones(T, N))
+end

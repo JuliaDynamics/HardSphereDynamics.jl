@@ -1,4 +1,6 @@
-"Hard sphere fluid in N dimensions"
+"""
+Hard sphere fluid in N dimensions
+"""
 mutable struct HardSphereFluid{N,T}
 	box::RectangularBox{N,T}
 	balls::Vector{MovableBall{N,T}}

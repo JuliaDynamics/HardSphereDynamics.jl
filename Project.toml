@@ -1,5 +1,13 @@
+name = "HardSphereDynamics"
+uuid = "2cbf6e9d-eec9-4262-aa18-cb9280186e6b"
+authors = ["David P. Sanders <dpsanders@gmail.com>"]
+version = "0.1.0"
+
 [deps]
 Distributions = "31c24e10-a181-5473-b8eb-7969acd0382f"
 LinearAlgebra = "37e2e46d-f89d-539d-b4ee-838fcccc9c8e"
 Parameters = "d96e819e-fc66-5662-9728-84c9c7592b0a"
 StaticArrays = "90137ffa-7385-5640-81b9-e52037218182"
+
+[compat]
+julia = "1"

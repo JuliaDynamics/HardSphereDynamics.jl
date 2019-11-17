@@ -20,6 +20,9 @@ fluid = HardSphereFluid(d, n, r)  # create hard spheres in unit box in d dimensi
 positions, velocities, times = time_evolution!(fluid, δt, final_time)
 ```
 
+There are examples of visualizing the results using `Makie.jl` in the `examples` directory
+(but no dependency on `Makie.jl` is assumed).
+
 ## Author
 
 - [David P. Sanders](http://sistemas.fciencias.unam.mx/~dsanders), Departamento de Física, Facultad de Ciencias, Universidad Nacional Autónoma de México (UNAM) & Visiting researcher, MIT

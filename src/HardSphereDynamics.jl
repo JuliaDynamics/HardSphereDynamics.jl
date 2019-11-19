@@ -1,7 +1,7 @@
 module HardSphereDynamics
 
 export FixedPlane, MovableBall, HardSphereFluid
-export initial_condition!, time_evolution!
+export initial_condition!, evolve!
 
 
 # stdlib:

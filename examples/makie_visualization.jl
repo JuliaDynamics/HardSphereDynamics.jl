@@ -78,8 +78,8 @@ to_2D(v::SVector{1,T}) where {T} = SVector(zero(T), v[1])
 to_3D(v::SVector{1,T}) where {T} = SVector(zero(T), zero(T), v[1])
 to_3D(v::SVector{2,T}) where {T} = SVector(zero(T), v[1], v[2])
 
-to_2D(v::Vector{Vector{<:SVector}}) = [to_2D.(x) for x in v]
-to_3D(v::Vector{Vector{<:SVector}}) = [to_3D.(x) for x in v]
+to_2D(v::Vector{Vector{SVector{N,T}}}) where {N,T} = [to_2D.(x) for x in v]
+to_3D(v::Vector{Vector{SVector{N,T}}}) where {N,T} = [to_3D.(x) for x in v]
 
 
 

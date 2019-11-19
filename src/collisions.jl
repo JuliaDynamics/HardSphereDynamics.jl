@@ -103,6 +103,8 @@ function collide!(b1::MovableBall, b2::MovableBall)
 
     m_sum = m1 + m2
 
+    # TODO: Rewrite as 1 / (1 + m2/m1) so that works with infinite mass
+
     v1′ = v1 + 2 * m2 / m_sum * (v2n - v1n)
     v2′ = v2 + 2 * m1 / m_sum * (v1n - v2n)
 

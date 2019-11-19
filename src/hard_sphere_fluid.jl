@@ -137,29 +137,6 @@ HardSphereFluid{N,T}(num_balls, r) where {N,T} = HardSphereFluid{N,T}(unit_hyper
 HardSphereFluid(N, num_balls, r) = HardSphereFluid{N,Float64}(num_balls, r)
 
 
-"Evolve from collision to collision"
-function evolve!(fluid::HardSphereFluid, steps)
-
-	@unpack balls, box, collision_time = fluid
-
-    positions = [ [ball.x for ball in balls] ]
-
-    for i in 1:steps
-
-		flow!(balls, (fluid.next_collision_time - fluid.current_time))
-		fluid.current_time = fluid.next_collision_time
-
-		collide!(fluid)
-		find_collision!(fluid)
-
-        push!(positions, [ball.x for ball in balls])
-
-    end
-
-    return positions
-
-end
-
 
 
 function flow!(balls::Vector{<:MovableBall}, t)
@@ -167,6 +144,47 @@ function flow!(balls::Vector{<:MovableBall}, t)
 		flow!(ball, t)
 	end
 end
+
+
+
+"""
+	evolve!(fluid::HardSphereFluid, num_collisions::Integer)
+
+Evolve fluid for `num_collisions` collisions (sphere--sphere
+and sphere--wall collisions are counted).
+
+Returns positions and post-collisions velocities, as well as
+times at which collisions occur and collision type.
+"""
+function evolve!(fluid::HardSphereFluid, num_collisions::Integer)
+
+	@unpack balls, box, next_collision_time = fluid
+
+    positions = [ [ball.x for ball in balls] ]
+	velocities = [ [ball.v for ball in balls] ]
+	times = [0.0]
+	collision_types = [:none]
+
+    for i in 1:num_collisions
+
+		flow!(balls, (fluid.next_collision_time - fluid.current_time))
+		fluid.current_time = fluid.next_collision_time
+
+		push!(collision_types, fluid.collision_type)
+
+		collide!(fluid)
+		find_collision!(fluid)
+
+        push!(positions, [ball.x for ball in balls])
+		push!(velocities, [ball.v for ball in balls])
+		push!(times, fluid.current_time)
+
+    end
+
+    return positions, velocities, times, collision_types
+
+end
+
 
 
 function flow!(fluid::HardSphereFluid, t)
@@ -194,8 +212,13 @@ function flow!(fluid::HardSphereFluid, t)
 end
 
 
-"Evolve from collision to collision"
-function time_evolution!(fluid::HardSphereFluid, δt, final_time)
+"""
+	evolve!(fluid::HardSphereFluid, δt, final_time)
+
+Time evolution in steps of `δt`.
+Returns positions, velocities and times.
+"""
+function evolve!(fluid::HardSphereFluid, δt, final_time)
 	@unpack balls = fluid
 
 	positions = [ [ball.x for ball in balls] ]

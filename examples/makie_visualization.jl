@@ -5,7 +5,10 @@ using GeometryTypes
 using AbstractPlotting
 using Colors
 using StatsBase
+<<<<<<< HEAD
 using StaticArrays
+=======
+>>>>>>> c72098c3d0bb0891cac4cc7c820ceb74c772540f
 
 using LinearAlgebra
 
@@ -40,6 +43,7 @@ function visualize_2d(fluid, positions, velocities, times, sleep_step=0.001)
 
 end
 
+<<<<<<< HEAD
 visualize_3d(fluid::HardSphereFluid, positions, velocities; sleep_step=0.001) =
     visualize_3d(positions, velocities, [ball.r for ball in fluid.balls], sleep_step=sleep_step)
 
@@ -51,16 +55,30 @@ function visualize_3d(positions, velocities, radii;
 
     data = Makie.Node(Point3f0.(positions[1]))
     limits = FRect3D(lower, upper .- lower)  # 2nd argument are widths in each direction
+=======
+function visualize_3d(fluid, positions, velocities, times, sleep_step=0.001)
+
+    data = Makie.Node(Point3f0.(positions[1]))
+    limits = FRect3D(fluid.box.lower, fluid.box.upper)
+>>>>>>> c72098c3d0bb0891cac4cc7c820ceb74c772540f
 
     # color by speed:
     cs = Makie.Node(norm.(velocities[1]))
     mean_c = mean(cs[])
     crange = (0.0, 2 * mean_c)
 
+<<<<<<< HEAD
     scene = Scene(resolution = (1000, 1000))
     s = Makie.meshscatter!(scene, data,
                             color=cs, colorrange=crange, colormap=:viridis,
                             markersize=radii,
+=======
+
+    scene = Scene(resolution = (1000, 1000))
+    s = Makie.meshscatter!(scene, data,
+                            color=cs, colorrange=crange, colormap=:viridis,
+                            markersize=[ball.r for ball in fluid.balls],
+>>>>>>> c72098c3d0bb0891cac4cc7c820ceb74c772540f
                             limits=limits)
 
     display(s)
@@ -74,6 +92,7 @@ function visualize_3d(positions, velocities, radii;
 
 end
 
+<<<<<<< HEAD
 to_2D(v::SVector{1,T}) where {T} = SVector(zero(T), v[1])
 to_3D(v::SVector{1,T}) where {T} = SVector(zero(T), zero(T), v[1])
 to_3D(v::SVector{2,T}) where {T} = SVector(zero(T), v[1], v[2])
@@ -86,6 +105,8 @@ to_3D(v::Vector{Vector{SVector{N,T}}}) where {N,T} = [to_3D.(x) for x in v]
 
 
 
+=======
+>>>>>>> c72098c3d0bb0891cac4cc7c820ceb74c772540f
 ## Run:
 
 d = 3
@@ -96,9 +117,15 @@ r = 0.05  # radius
 final_time = 100
 
 fluid = HardSphereFluid(d, n, r)  # create hard spheres in unit box in d dimensions
+<<<<<<< HEAD
 positions, velocities, times = evolve!(fluid, δt, final_time)
 
 visualize_3d(fluid, positions, velocities)
+=======
+positions, velocities, times = time_evolution!(fluid, δt, final_time)
+
+visualize_3d(fluid, positions, velocities, times)
+>>>>>>> c72098c3d0bb0891cac4cc7c820ceb74c772540f
 
 
 ## Maxwell--Boltzmann distribution:

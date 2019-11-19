@@ -101,12 +101,14 @@ function collide!(b1::MovableBall, b2::MovableBall)
     v1n = (v1 ⋅ n) * n
     v2n = (v2 ⋅ n) * n
 
-    m_sum = m1 + m2
+    # treat terms m1 / (m1 + m2)  and m2 / (m1 + m2)
+    # by dividing top and bottom by m1
+    # This allows one of them to be Inf 
 
-    # TODO: Rewrite as 1 / (1 + m2/m1) so that works with infinite mass
+    mass_ratio = (1 / ((m1 / m2) + 1))
 
-    v1′ = v1 + 2 * m2 / m_sum * (v2n - v1n)
-    v2′ = v2 + 2 * m1 / m_sum * (v1n - v2n)
+    v1′ = v1 + 2 * mass_ratio * (v2n - v1n)
+    v2′ = v2 + 2 * (1 - mass_ratio) * (v1n - v2n)
 
     b1.v = v1′
     b2.v = v2′

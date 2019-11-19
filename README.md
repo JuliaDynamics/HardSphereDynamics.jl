@@ -17,11 +17,19 @@ r = 0.05  # radius
 final_time = 10
 
 fluid = HardSphereFluid(d, n, r)  # create hard spheres in unit box in d dimensions
-positions, velocities, times = evolve!(fluid, δt, final_time)
+
+num_collisions = 100
+pos, vel, times, types = evolve!(fluid, num_collisions)  # return data at each collision
+
+pos, vel, times = evolve!(fluid, δt, final_time)  # return data at given times
 ```
 
-There are examples of visualizing the results using `Makie.jl` in the `examples` directory
+Each version of `evolve!` returns a `Vector` of positions and a `Vector` of velocities of each sphere at the given collisions or times. The collision version also returns a vector of collision types.
+
+There are examples of visualizing the results using `Makie.jl` in 2D and 3D in the `examples` directory
 (but no dependency on `Makie.jl` is assumed).
+
+The spheres may have different radii and masses. Currently they must live in a hard rectangular box, by default a unit cube, but this is relatively easy to improve.
 
 ## Author
 

@@ -213,25 +213,32 @@ end
 
 
 """
-	evolve!(fluid::HardSphereFluid, δt, final_time)
+	evolve!(fluid::HardSphereFluid, times)
 
-Time evolution in steps of `δt`.
-Returns positions, velocities and times.
+Time evolution, calculating positions and velocities at given times.
 """
-function evolve!(fluid::HardSphereFluid, δt, final_time)
+function evolve!(fluid::HardSphereFluid, times)
 	@unpack balls = fluid
 
 	positions = [ [ball.x for ball in balls] ]
 	velocities = [ [ball.v for ball in balls] ]
 	ts = [0.0]
 
-	for t in δt:δt:final_time
+	for t in times
 		flow!(fluid, δt)
         push!(positions, [ball.x for ball in balls])
 		push!(velocities, [ball.v for ball in balls])
 		push!(ts, t)
     end
 
-    return positions, velocities, ts
-
+    return positions, velocities, times
 end
+
+"""
+	evolve!(fluid::HardSphereFluid, δt, final_time)
+
+Calculate positions and velocities at times up to `final_time`,
+spaced by `δt`.
+
+"""
+evolve!(fluid::HardSphereFluid, δt, final_time) = evolve!(fluid, δt:δt:final_time)

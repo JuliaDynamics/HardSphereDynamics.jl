@@ -186,6 +186,12 @@ function evolve!(fluid::HardSphereFluid, num_collisions::Integer)
 end
 
 
+"""
+	flow!(fluid::HardSphereFluid, t)
+
+Update hard sphere fluid by flowing for a time `t`, taking
+account of possible collisions during that time.
+"""
 
 function flow!(fluid::HardSphereFluid, t)
 
@@ -224,14 +230,18 @@ function evolve!(fluid::HardSphereFluid, times)
 	velocities = [ [ball.v for ball in balls] ]
 	ts = [0.0]
 
+	current_t = 0.0
+
 	for t in times
-		flow!(fluid, δt)
+		flow!(fluid, t - current_t)
         push!(positions, [ball.x for ball in balls])
 		push!(velocities, [ball.v for ball in balls])
 		push!(ts, t)
+
+		current_t = t
     end
 
-    return positions, velocities, times
+    return positions, velocities, ts
 end
 
 """

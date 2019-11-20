@@ -121,7 +121,7 @@ end
 
 
 
-function HardSphereFluid{N,T}(box::RectangularBox{N,T}, balls::Vector{MovableBall{N,T}}) where {N,T}
+function HardSphereFluid(box::RectangularBox{N,T}, balls::Vector{MovableBall{N,T}}) where {N,T}
 	partner1, partner2, collision_type, min_collision_time = find_collision(balls, box)
 	current_time = zero(T)
 
@@ -136,7 +136,7 @@ function HardSphereFluid{N,T}(box::RectangularBox{N,T}, num_balls, r) where {N,T
 	balls = [MovableBall(zero(SVector{N,T}), zero(SVector{N,T}), r) for i in 1:num_balls]
 	initial_condition!(balls, box)
 
-	return HardSphereFluid{N,T}(box, balls)
+	return HardSphereFluid(box, balls)
 end
 
 HardSphereFluid{N,T}(num_balls, r) where {N,T} = HardSphereFluid{N,T}(unit_hypercube(N, T), num_balls, r)

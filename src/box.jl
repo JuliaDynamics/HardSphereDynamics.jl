@@ -45,8 +45,9 @@ end
 RectangularBox(lower::SVector{N,T}, upper::SVector{N,T}) where {N,T} = RectangularBox{N,T}(lower, upper)
 
 
-
 function unit_hypercube(N, T)
 	return RectangularBox(-0.5 * ones(SVector{N,T}),
-						  +0.5 * ones(SVector{N,T}))
+						  +0.5 * ones(SVector{N,T})
+						  +0.5 * ones(SVector{N,T})
+  )
 end

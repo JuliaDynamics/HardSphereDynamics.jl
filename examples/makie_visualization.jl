@@ -72,15 +72,16 @@ function visualize_3d(positions, velocities, radii;
         sleep(sleep_step)
     end
 
+    return data, cs
+
 end
 
-to_2D(v::SVector{1,T}) where {T} = SVector(zero(T), v[1])
-to_3D(v::SVector{1,T}) where {T} = SVector(zero(T), zero(T), v[1])
-to_3D(v::SVector{2,T}) where {T} = SVector(zero(T), v[1], v[2])
+to_2d(v::SVector{1,T}) where {T} = SVector(zero(T), v[1])
+to_3d(v::SVector{1,T}) where {T} = SVector(zero(T), zero(T), v[1])
+to_3d(v::SVector{2,T}) where {T} = SVector(zero(T), v[1], v[2])
 
-to_2D(v::Vector{Vector{SVector{N,T}}}) where {N,T} = [to_2D.(x) for x in v]
-to_3D(v::Vector{Vector{SVector{N,T}}}) where {N,T} = [to_3D.(x) for x in v]
-
+to_2d(v::Vector) = to_2D.(v)
+to_3d(v::Vector) = to_3D.(v)
 
 
 

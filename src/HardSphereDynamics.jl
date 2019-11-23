@@ -22,12 +22,13 @@ end
 
 normsq(v) = sum(abs2, v)
 
-
-include("box.jl")
-
 include("ball.jl")
-include("collisions.jl")
+include("box.jl")
 include("hard_sphere_fluid.jl")
+
+include("collisions.jl")
+include("event_handler.jl")
+
 
 
 

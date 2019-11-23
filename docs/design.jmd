@@ -1,0 +1,41 @@
+## Hard sphere fluid
+
+A `HardSphereFluid` has
+- a collection of balls
+- a box (billiard table) where the balls live
+
+This abstraction is maybe not useful, except that it records the
+instantaneous state of the system.
+Actually the instantaneous state is just the set of (mutable) ball data
+
+
+A `FlowDynamics` type (name not possible) has
+- a hard sphere fluid
+- a flow dynamics
+- a collision dynamics
+
+This is basically a generic hybrid (discrete--continuous) system
+
+
+Details of collisions should not be directly in HardSphereFluid type
+
+`CollisionDynamics` type
+- `NaiveDynamics`
+- `PriorityQueueDynamics`
+
+
+Need:
+- Fluid state: Ball data
+- Flow rules
+- Collision rules
+- Algorithm for choosing next collision (naive vs priority queue)
+
+Think of generic hybrid system
+
+
+
+HardSphereSimulation:
+- HardSphereFluid (vector of balls + container)
+- EventHandler
+- FlowDynamics  
+- CollisionDynamics

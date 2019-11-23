@@ -22,9 +22,8 @@ function visualize_2d(positions, velocities, radii;
     # limits = FRect2D(fluid.box.lower, fluid.box.upper)
     limits = FRect2D(lower, upper .- lower)  #
 
-    trajectory =  Makie.Node(Point2f0.([positions[1][2], positions[1][2]]))
+    trajectory =  Makie.Node(Point2f0.([positions[1][2]]))
 
-    trajectory =  Makie.Node(Point2f0.([positions[1][2], positions[1][2]]))
 
     # color by speed:
     cs = Makie.Node(norm.(velocities[1]))

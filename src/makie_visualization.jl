@@ -12,11 +12,15 @@ using LinearAlgebra
 export visualize_2d, visualize_3d, to_2d, to_3d
 
 
+<<<<<<< HEAD:src/makie_visualization.jl
 
 function visualize_2d(positions, velocities, radii;
                        lower = -0.5*ones(SVector{2,Float32}),
                         upper = 0.5*ones(SVector{2,Float32}),
                         sleep_step=0.001)
+=======
+function visualize_2d(fluid, positions, velocities, sleep_step=0.001)
+>>>>>>> Fix visualize_2d signature:examples/makie_visualization.jl
 
     data = Makie.Node(Point2f0.(positions[1]))
     # limits = FRect2D(fluid.box.lower, fluid.box.upper)

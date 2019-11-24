@@ -1,9 +1,10 @@
 using HardSphereDynamics
 
-using Makie
-using GeometryTypes
-using AbstractPlotting
-using Colors
+using .Makie  # . is for Requires.jl
+using .GeometryTypes
+# using AbstractPlotting
+using .Colors
+
 using StatsBase
 using StaticArrays
 

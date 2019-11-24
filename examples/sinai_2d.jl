@@ -19,4 +19,4 @@ positions, velocities, times = evolve!(fluid, δt, final_time)  # return data at
 
 using Makie
 
-visualize_2d(fluid, positions, velocities)
+visualize_2d(fluid, positions, velocities, traj=2)

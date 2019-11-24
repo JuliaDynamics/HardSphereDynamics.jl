@@ -1,9 +1,9 @@
 using HardSphereDynamics
 
-using .Makie  # . is for Requires.jl
-using .GeometryTypes
+using .AbstractPlotting  # . is for Requires.jl
+using .AbstractPlotting.GeometryTypes
 # using AbstractPlotting
-using .Colors
+using .AbstractPlotting.Colors
 
 using StatsBase
 using StaticArrays
@@ -19,18 +19,18 @@ function visualize_2d(positions, velocities, radii;
                         upper = 0.5*ones(SVector{2,Float32}),
                         sleep_step=0.001)
 
-    data = Makie.Node(Point2f0.(positions[1]))
+    data = AbstractPlotting.Node(Point2f0.(positions[1]))
     # limits = FRect2D(fluid.box.lower, fluid.box.upper)
     limits = FRect2D(lower, upper .- lower)  #
 
     # color by speed:
-    cs = Makie.Node(norm.(velocities[1]))
+    cs = AbstractPlotting.Node(norm.(velocities[1]))
     mean_c = mean(cs[])
     crange = (0.0, 2 * mean_c)
 
 
     scene = Scene(resolution = (1000, 1000))
-    s = Makie.scatter!(scene, data, marker=Circle(Point2f0(0), 10.0f0),
+    s = AbstractPlotting.scatter!(scene, data, marker=Circle(Point2f0(0), 10.0f0),
                             color=cs, colorrange=crange, colormap=:viridis,
                             markersize=2 .* radii,
                             limits=limits)
@@ -58,16 +58,16 @@ function visualize_3d(positions, velocities, radii;
                     upper = 0.5*ones(SVector{3,Float32}),
                     sleep_step=0.001)
 
-    data = Makie.Node(Point3f0.(positions[1]))
+    data = AbstractPlotting.Node(Point3f0.(positions[1]))
     limits = FRect3D(lower, upper .- lower)  # 2nd argument are widths in each direction
 
     # color by speed:
-    cs = Makie.Node(norm.(velocities[1]))
+    cs = AbstractPlotting.Node(norm.(velocities[1]))
     mean_c = mean(cs[])
     crange = (0.0, 2 * mean_c)
 
     scene = Scene(resolution = (1000, 1000))
-    s = Makie.meshscatter!(scene, data,
+    s = AbstractPlotting.meshscatter!(scene, data,
                             color=cs, colorrange=crange, colormap=:viridis,
                             markersize=radii,
                             limits=limits)

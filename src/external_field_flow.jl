@@ -42,5 +42,5 @@ function flow!(b::MovableBall, t, flow::ExternalFieldFlow)
     g = flow.g
 
     b.x += b.v * t + 0.5*g*t^2
-    b.v += flow_type.g * t
+    b.v += g * t
 end

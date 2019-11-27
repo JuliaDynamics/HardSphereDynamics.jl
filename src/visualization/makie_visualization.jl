@@ -53,6 +53,7 @@ visualize_2d(fluid::HardSphereFluid, positions, velocities; sleep_step=0.001) =
 
 
 
+
 function visualize_3d(positions, velocities, radii;
                    lower = -0.5*ones(SVector{3,Float32}),
                     upper = 0.5*ones(SVector{3,Float32}),
@@ -89,6 +90,14 @@ end
 visualize_3d(fluid::HardSphereFluid, positions, velocities; sleep_step=0.001) =
     visualize_3d(positions, velocities, [ball.r for ball in fluid.balls], sleep_step=sleep_step)
 
+
+function visualize_3d(history::Vector{Vector{MovableBall{N,T}}}; sleep_step=0.001) where {N,T}
+    positions = [ [ball.x for ball in states] for states in history ]
+    velocities = [ [ball.v for ball in states] for states in history ]
+    radii = [ball.r for ball in history[1]]
+
+    visualize_3d(positions, velocities, radii; sleep_step=sleep_step)
+end
 
 to_2d(v::SVector{1,T}) where {T} = SVector(zero(T), v[1])
 to_3d(v::SVector{1,T}) where {T} = SVector(zero(T), zero(T), v[1])

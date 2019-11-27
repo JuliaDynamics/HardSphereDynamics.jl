@@ -103,7 +103,7 @@ function evolve!(simulation::HardSphereSimulation{N,T}, num_collisions::Integer)
 
     # positions = [ [ball.x for ball in balls] ]
 	# velocities = [ [ball.v for ball in balls] ]
-	states = [copy(fluid.balls)]
+	states = [deepcopy(fluid.balls)]
 	times = [0.0]
 	collision_types = [:none]
 
@@ -118,7 +118,7 @@ function evolve!(simulation::HardSphereSimulation{N,T}, num_collisions::Integer)
 		collide!(fluid, event_handler, collision_dynamics)
 		find_collision!(event_handler, fluid, flow_dynamics)
 
-		push!(states, copy(fluid.balls))
+		push!(states, deepcopy(fluid.balls))
         push!(times, simulation.current_time)
 
     end
@@ -170,14 +170,14 @@ function evolve!(simulation::HardSphereSimulation{N,T}, times) where {N,T}
 
 	@unpack fluid, flow_dynamics, collision_dynamics, event_handler = simulation
 
-	states = [copy(fluid.balls)]
+	states = [deepcopy(fluid.balls)]
 	ts = [0.0]
 
 	current_t = 0.0
 
 	for t in times
 		flow!(simulation, t - current_t)
-        push!(states, copy(fluid.balls))
+        push!(states, deepcopy(fluid.balls))
 		push!(ts, t)
 
 		current_t = t
@@ -205,9 +205,9 @@ collision_type = ElasticCollision()
 event_handler = AllToAll(fluid, flow_type)
 
 simulation =  HardSphereSimulation(
-	fluid, event_handler, flow_type, collision_type)
+	fluid, event_handler, flow_type, collision_type);
 
-states, times, collision_types = evolve!(simulation, 100)
+states, times, collision_types = evolve!(simulation, 100);
 
-states, times = evolve!(simulation, 0.01, 10)
+states, times = evolve!(simulation, 0.01, 10);
 =#

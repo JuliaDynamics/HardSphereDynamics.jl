@@ -1,4 +1,3 @@
-abstract type AbstractFlowDynamics end
 
 struct FreeFlow <: AbstractFlowDynamics end
 
@@ -23,9 +22,7 @@ function collision_time(b1::MovableBall, b2::MovableBall, ::FreeFlow)
 
     b = Δx⋅Δv
 
-    if b > 0   # moving away
-        return Inf
-    end
+    b > 0 && return Inf  # moving away from one another
 
 
     a = normsq(Δv)
@@ -49,26 +46,26 @@ end
 
 
 
-
-function find_collision(b::MovableBall{N,T}, box::RectangularBox{N,T}, ::FreeFlow) where {N,T}
-
-    walls = box.walls
-
-    tol = 1e-10
-
-    min_collision_time = Inf
-    which = -1
-
-    for i in 1:length(walls)
-        t = collision_time(b, walls[i])
-        if tol < t < min_collision_time
-            min_collision_time = t
-            which = i
-        end
-    end
-
-    return (which, min_collision_time)
-end
+#
+# function find_collision(b::MovableBall{N,T}, box::RectangularBox{N,T}, ::FreeFlow) where {N,T}
+#
+#     walls = box.walls
+#
+#     tol = 1e-10
+#
+#     min_collision_time = Inf
+#     which = -1
+#
+#     for i in 1:length(walls)
+#         t = collision_time(b, walls[i])
+#         if tol < t < min_collision_time
+#             min_collision_time = t
+#             which = i
+#         end
+#     end
+#
+#     return (which, min_collision_time)
+# end
 
 
 

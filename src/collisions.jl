@@ -28,16 +28,12 @@ function collide!(b1::MovableBall, b2::MovableBall, ::ElasticCollision)
 
     # reference: https://en.wikipedia.org/wiki/Elastic_collision#Two-dimensional_collision_with_two_moving_objects
 
-    # physics
-    # split velocities into component along line joining ball centers, and
-    # orthogonal component
+    # Component orthogonal to line joining centers
+    # is unchanged by elastic collision (since impulse is applied in direction joining sphere centers)
 
-    # Ortho component is unchanged by elastic collision (since impulse is applied in direction of sphere centers)
+    n = normalize(Δx)   # vector joining sphere centers
 
-    n = normalize(Δx)
-
-    # "normal" components of velocities:
-    v1n = (v1 ⋅ n) * n
+    v1n = (v1 ⋅ n) * n  # velocity components in that direction
     v2n = (v2 ⋅ n) * n
 
     # treat terms m1 / (m1 + m2)  and m2 / (m1 + m2)
@@ -46,7 +42,7 @@ function collide!(b1::MovableBall, b2::MovableBall, ::ElasticCollision)
 
     mass_ratio = (1 / ((m1 / m2) + 1))
 
-    v1′ = v1 + 2 * mass_ratio * (v2n - v1n)
+    v1′ = v1 + 2 * mass_ratio * (v2n - v1n)  # update only components in n direction
     v2′ = v2 + 2 * (1 - mass_ratio) * (v1n - v2n)
 
     b1.v = v1′

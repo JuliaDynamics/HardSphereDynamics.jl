@@ -198,16 +198,39 @@ evolve!(simulation::HardSphereSimulation, δt, final_time) = evolve!(simulation,
 
 
 #=
-fluid = HardSphereFluid(3, 10, 0.1)
+# states, times, collision_types = evolve!(simulation, 100);
+
+
+using StaticArrays
+
+box = HardSphereDynamics.RectangularBox(SA[-0.5, -0.5, -10.0],
+					SA[+0.5, +0.5, +10.0])
+
+fluid = HardSphereFluid{3,Float64}(box, 100, 0.05)
 initial_condition!(fluid)
-flow_type = FreeFlow()
-collision_type = ElasticCollision()
-event_handler = AllToAll(fluid, flow_type)
+# flow_type = FreeFlow()
+flow_type = ExternalFieldFlow(SA[0.0, 0.0, -1.0])
 
-simulation =  HardSphereSimulation(
-	fluid, event_handler, flow_type, collision_type);
+function run_simulation(N, r, flow_type)
 
-states, times, collision_types = evolve!(simulation, 100);
+	box = HardSphereDynamics.RectangularBox(SA[-0.5, -0.5, -3.0],
+					SA[+0.5, +0.5, +3.0])
 
-states, times = evolve!(simulation, 0.01, 10);
+	fluid = HardSphereFluid{3,Float64}(box, N, r)
+
+	initial_condition!(fluid)
+	collision_type = ElasticCollision()
+	event_handler = AllToAll(fluid, flow_type)
+
+	simulation =  HardSphereSimulation(
+		fluid, event_handler, flow_type, collision_type);
+
+	states, times = evolve!(simulation, 0.01, 100);
+
+	visualize_3d(states, sleep_step=0.005, lower=box.lower, upper=box.upper)
+end
+
+
+using Makie
+visualize_3d(states, sleep_step=0.001, lower=box.lower, upper=box.upper)
 =#

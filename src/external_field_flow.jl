@@ -4,25 +4,39 @@ struct ExternalFieldFlow{N,T} <: AbstractFlowDynamics
 end
 
 
-function collision_time(b::MovableBall, Π::FixedPlane, flow::ExternalFieldFlow)
+function collision_time(ball::MovableBall, Π::FixedPlane, flow::ExternalFieldFlow)
 
-    @unpack r, x, v = b
+    @unpack r, x, v = ball
     @unpack n, p = Π
     g = flow.g
 
-    a = g ⋅ n
     b = v ⋅ n
-    c = 2 * ( (x - p) ⋅ n + r )
 
-    discriminant = b^2 - a*c
+
+    a = 0.5 * g ⋅ n
+
+    if a == 0   # no effect of field
+        return collision_time(ball, Π, FreeFlow())
+    end
+
+    c = (x - p) ⋅ n + r
+
+    discriminant = b^2 - 4*a*c
 
     if discriminant ≥ 0
         d = √discriminant
 
-        # t1 = (-b + d) / a
-        t2 = (-b - d) / a
+        t1 = (-b - d) / (2a)
+        t2 = (-b + d) / (2a)
 
-        if t2 > 0
+        ## TODO: EXCLUDE CASE WHERE t1 IS BASICALLY 0 SINCE TOUCHING PLANE RIGHT NOW
+
+
+        if t1 > 0 && (v + g*t1) ⋅ n > 0   # if b < 0, moving wrong way so exclude first bounce
+            return t1
+        end
+
+        if t2 > 0 && (v + g*t2) ⋅ n > 0
             return t2
         end
     end
@@ -43,4 +57,6 @@ function flow!(b::MovableBall, t, flow::ExternalFieldFlow)
 
     b.x += b.v * t + 0.5*g*t^2
     b.v += g * t
+
+    return b
 end

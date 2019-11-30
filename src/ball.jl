@@ -14,10 +14,3 @@ centre(b::MovableBall) = b.x
 
 "Normal vector at point x on sphere"
 normal(b::MovableBall, x) = normalize(x - centre(b))
-
-
-
-"Flow ball for a time t"
-function flow!(b::MovableBall, t)
-    b.x += b.v * t
-end

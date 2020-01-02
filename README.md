@@ -1,6 +1,8 @@
-# `HardSphereDynamics.jl`
+# HardSphereDynamics.jl
 
-Julia package to simulate the dynamics of hard sphere fluids in any number of dimensions via an event-driven algorithm.
+This is a Julia package to simulate the dynamics of hard-sphere fluids using an event-driven algorithm ("exact" calculation of each collision). The code is designed to work in any number of spatial dimensions.
+
+Simple visualizations in 2D and 3D using Makie are also provided.
 
 
 ## Example usage

@@ -33,13 +33,16 @@ place a disc at a time and check that it doesn't overlap with any previously pla
 
 Generates allowed ball positions and uniform velocities.
 """
-function initial_condition!(balls::Vector{MovableBall{N,T}}, box) where {N,T}
+function initial_condition!(balls::Vector{MovableBall{N,T}}, table;
+		lower=table.lower, upper=table.upper) where {N,T}
 
-    U = Uniform.(box.lower .+ balls[1].r, box.upper .- balls[1].r)
+	## TODO: Check that initial condition is OK with respect to planes
+
+    U = Uniform.(lower .+ balls[1].r, upper .- balls[1].r)
     balls[1].x = rand.(U)
 
     for i = 2:length(balls)
-        U = Uniform.(box.lower .+ balls[i].r, box.upper .- balls[i].r)
+        U = Uniform.(lower .+ balls[i].r, upper .- balls[i].r)
         balls[i].x = rand.(U)
 
         count = 0
@@ -65,7 +68,8 @@ function initial_condition!(balls::Vector{MovableBall{N,T}}, box) where {N,T}
     end
 end
 
-initial_condition!(fluid::HardSphereFluid) = initial_condition!(fluid.balls, fluid.box)
+initial_condition!(fluid::HardSphereFluid; kw...) = initial_condition!(fluid.balls, fluid.box;
+	kw...)
 
 
 "Carry out collision assuming already at moment of collision"
@@ -138,7 +142,7 @@ account of possible collisions during that time.
 function flow!(simulation::HardSphereSimulation, t)
 
 	@unpack fluid, flow_dynamics, collision_dynamics, event_handler = simulation
-	# @unpack balls, box = fluid
+	# @unpack balls, table = fluid
 
 	time_to_next_collision = event_handler.next_collision_time - simulation.current_time
 
@@ -203,23 +207,25 @@ evolve!(simulation::HardSphereSimulation, δt, final_time) = evolve!(simulation,
 
 using StaticArrays
 
-box = HardSphereDynamics.RectangularBox(SA[-0.5, -0.5, -10.0],
+table = HardSphereDynamics.RectangularBox(SA[-0.5, -0.5, -10.0],
 					SA[+0.5, +0.5, +10.0])
 
-fluid = HardSphereFluid{3,Float64}(box, 100, 0.05)
+fluid = HardSphereFluid{3,Float64}(table, 100, 0.05)
 initial_condition!(fluid)
 # flow_type = FreeFlow()
 flow_type = ExternalFieldFlow(SA[0.0, 0.0, -1.0])
 
-function run_simulation(N, r, flow_type)
+function run_simulation(N, r)
 
-	box = HardSphereDynamics.RectangularBox(SA[-0.5, -0.5, -3.0],
-					SA[+0.5, +0.5, +3.0])
+	table = HardSphereDynamics.RectangularBox(SA[-0.5, -0.5, -1.0],
+					SA[+0.5, +0.5, +100.0])
 
-	fluid = HardSphereFluid{3,Float64}(box, N, r)
+	fluid = HardSphereFluid{3,Float64}(table, N, r)
 
-	initial_condition!(fluid)
+	initial_condition!(fluid, lower=table.lower, upper=-table.lower)
 	collision_type = ElasticCollision()
+
+	flow_type = ExternalFieldFlow(SA[0.0, 0.0, -10.0])
 	event_handler = AllToAll(fluid, flow_type)
 
 	simulation =  HardSphereSimulation(
@@ -227,10 +233,10 @@ function run_simulation(N, r, flow_type)
 
 	states, times = evolve!(simulation, 0.01, 100);
 
-	visualize_3d(states, sleep_step=0.005, lower=box.lower, upper=box.upper)
+	visualize_3d(states, sleep_step=0.005, lower=table.lower, upper=-table.lower)
 end
 
 
 using Makie
-visualize_3d(states, sleep_step=0.001, lower=box.lower, upper=box.upper)
+visualize_3d(states, sleep_step=0.001, lower=table.lower, upper=table.upper)
 =#

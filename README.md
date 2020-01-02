@@ -3,33 +3,46 @@
 Julia package to simulate the dynamics of hard sphere fluids in any number of dimensions via an event-driven algorithm.
 
 
-## Usage
+## Example usage
 
 ```julia
 
-using HardSphereDynamics
+using HardSphereDynamics, StaticArrays
 
-d = 3
-n = 100   # number of spheres
-r = 0.05  # radius
+# create box:
 
+table = HardSphereDynamics.RectangularBox(SA[-0.5, -0.5, -1.0],
+                                          SA[+0.5, +0.5, +3.0])
+
+# create fluid:
+d = 3     # spatial dimension
+n = 20   # number of spheres
+r = 0.1  # radius
+
+fluid = HardSphereFluid{d,Float64}(table, n, r)
+initial_condition!(fluid, lower=table.lower, upper=-table.lower)
+
+# set up simulation:
+collision_type = ElasticCollision()
+flow_type = ExternalFieldFlow(SA[0.0, 0.0, -10.0])
+event_handler = AllToAll(fluid, flow_type)
+
+simulation =  HardSphereSimulation(
+    fluid, event_handler, flow_type, collision_type);
+
+# time evolution:
 δt = 0.01
-final_time = 10
+final_time = 100
+states, times = evolve!(simulation, δt, final_time);
 
-fluid = HardSphereFluid(d, n, r)  # create hard spheres in unit box in d dimensions
+# visualization:
+using Makie
 
-num_collisions = 100
-pos, vel, times, types = evolve!(fluid, num_collisions)  # return data at each collision
-
-pos, vel, times = evolve!(fluid, δt, final_time)  # return data at given times
+visualize_3d(states, sleep_step=0.005, lower=table.lower, upper=-table.lower)
 ```
 
-Each version of `evolve!` returns a `Vector` of positions and a `Vector` of velocities of each sphere at the given collisions or times. The collision version also returns a vector of collision types.
 
-There are examples of visualizing the results using `Makie.jl` in 2D and 3D in the `examples` directory
-(but no dependency on `Makie.jl` is assumed).
 
-The spheres may have different radii and masses. Currently they must live in a hard rectangular box, by default a unit cube, but this is relatively easy to improve.
 
 ## Author
 

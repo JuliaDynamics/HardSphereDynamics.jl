@@ -3,7 +3,7 @@ struct FreeFlow <: AbstractFlowDynamics end
 
 
 
-function collision_time(b::MovableBall, Π::FixedPlane, ::FreeFlow)
+function collision_time(b::MovableBall{N}, Π::FixedPlane{N}, ::FreeFlow) where {N}
     @unpack r, x, v = b
     @unpack n, p = Π
 
@@ -16,7 +16,7 @@ end
 
 
 
-function collision_time(b1::MovableBall, b2::MovableBall, ::FreeFlow)
+function collision_time(b1::MovableBall{N}, b2::MovableBall{N}, ::FreeFlow) where {N}
     Δx = b1.x - b2.x
     Δv = b1.v - b2.v
 

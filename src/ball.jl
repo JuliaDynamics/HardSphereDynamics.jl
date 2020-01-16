@@ -1,11 +1,11 @@
 
 
 "Movable ball in N dimensions"
-mutable struct MovableBall{N,T}
+mutable struct MovableBall{N,T,S}
     x::SVector{N,T}  # position of centre
     v::SVector{N,T}  # velocity
-    r::T             # radius
-    m::T             # mass
+    r::S             # radius
+    m::S             # mass
 end
 
 MovableBall(x, v, r) = MovableBall(x, v, r, one(r))

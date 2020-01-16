@@ -1,10 +1,12 @@
-
+"""
+Flow in a constant external field `g`.
+"""
 struct ExternalFieldFlow{N,T} <: AbstractFlowDynamics
     g::SVector{N,T}
 end
 
 
-function collision_time(ball::MovableBall, Π::FixedPlane, flow::ExternalFieldFlow)
+function collision_time(ball::MovableBall{N}, Π::FixedPlane{N}, flow::ExternalFieldFlow{N}) where {N}
 
     @unpack r, x, v = ball
     @unpack n, p = Π
@@ -46,13 +48,13 @@ end
 
 
 "Collision time for moving balls is independent of constant external field."
-collision_time(b1::MovableBall, b2::MovableBall, ::ExternalFieldFlow) =
+collision_time(b1::MovableBall{N}, b2::MovableBall{N}, ::ExternalFieldFlow{N}) where {N} =
     collision_time(b1, b2, FreeFlow())
 
 
 
 "Flow ball for a time t"
-function flow!(b::MovableBall, t, flow::ExternalFieldFlow)
+function flow!(b::MovableBall{N}, t, flow::ExternalFieldFlow{N}) where {N}
     g = flow.g
 
     b.x += b.v * t + 0.5*g*t^2

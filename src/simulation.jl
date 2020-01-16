@@ -1,9 +1,10 @@
 mutable struct HardSphereSimulation{
-    N, T,
-    F<:HardSphereFluid{N,T},
+    N,
+    F<:HardSphereFluid{N},
     H<:AbstractEventHandler,
     L<:AbstractFlowDynamics,
-    C<:AbstractCollisionDynamics
+    C<:AbstractCollisionDynamics,
+	T<:Real
 	}
 
     fluid::F
@@ -13,7 +14,7 @@ mutable struct HardSphereSimulation{
 	current_time::T
 end
 
-HardSphereSimulation(fluid::HardSphereFluid{N,T}, event_handler, flow_dynamics, collision_dynamics) where {N,T}=
+HardSphereSimulation(fluid::HardSphereFluid{N}, event_handler, flow_dynamics, collision_dynamics) where {N,T}=
 	HardSphereSimulation(fluid, event_handler, flow_dynamics, collision_dynamics, zero(T))
 
 
@@ -218,7 +219,7 @@ flow_type = ExternalFieldFlow(SA[0.0, 0.0, -1.0])
 function run_simulation(N, r)
 
 	table = HardSphereDynamics.RectangularBox(SA[-0.5, -0.5, -1.0],
-					SA[+0.5, +0.5, +100.0])
+					SA[+0.5, +0.5, +3.0])
 
 	fluid = HardSphereFluid{3,Float64}(table, N, r)
 

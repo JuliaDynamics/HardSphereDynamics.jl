@@ -6,7 +6,7 @@ struct ElasticCollision <: AbstractCollisionDynamics end
 
 "Elastic collision of ball with FixedPlane.
 The ball is assumed to be touching the FixedPlane."
-function collide!(b::MovableBall{N,T}, Π::FixedPlane{N,T}, ::ElasticCollision) where {N,T}
+function collide!(b::MovableBall{N}, Π::FixedPlane{N}, ::ElasticCollision) where {N}
     v = b.v
     n = Π.n
 
@@ -15,7 +15,7 @@ end
 
 
 "Assumes b1 and b2 are touching"
-function collide!(b1::MovableBall, b2::MovableBall, ::ElasticCollision)
+function collide!(b1::MovableBall{N}, b2::MovableBall{N}, ::ElasticCollision) where {N}
     Δx = b1.x - b2.x
 
     # @show norm(Δx)

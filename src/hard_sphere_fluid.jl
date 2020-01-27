@@ -34,6 +34,7 @@ HardSphereFluid(N, num_balls, r) = HardSphereFluid{N,Float64}(unit_hypercube(N, 
 
 # construct a new hard-sphere fluid with given state
 # state is vector of positions and vector of velocities
+# this creates a fluid of a different *type* in general
 function HardSphereFluid(fluid::HardSphereFluid, state)
 	balls = fluid.balls
 	positions, velocities = state
@@ -41,4 +42,23 @@ function HardSphereFluid(fluid::HardSphereFluid, state)
 	new_balls = [MovableBall(positions[i], velocities[i], balls[i].r, balls[i].m) for i in 1:length(balls)]
 
 	return HardSphereFluid(fluid.box, new_balls)
+end
+
+
+function state(fluid::HardSphereFluid)
+	return vcat([b.x for b in fluid.balls],
+				[b.v for b in fluid.balls])
+end
+
+function update!(fluid::HardSphereFluid, state)
+	balls = fluid.balls
+	num_balls = length(balls)
+
+	for i in 1:num_balls
+		balls[i].x = state[i]
+	end
+
+	for i in 1:num_balls
+		balls[i].v = state[i + num_balls]
+	end
 end

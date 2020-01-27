@@ -14,15 +14,16 @@ mutable struct HardSphereSimulation{
 	current_time::T
 end
 
+# TODO: Fix type of current_time
 HardSphereSimulation(fluid::HardSphereFluid{N}, event_handler, flow_dynamics, collision_dynamics) where {N,T}=
-	HardSphereSimulation(fluid, event_handler, flow_dynamics, collision_dynamics, zero(T))
+	HardSphereSimulation(fluid, event_handler, flow_dynamics, collision_dynamics, zero(Float64))
 
 
 
-overlap(b1::MovableBall, b2::MovableBall) =
+overlap(b1::MovableBall{N}, b2::MovableBall{N}) where {N}=
     normsq(b1.x - b2.x) < (b1.r + b2.r)^2
 
-overlap(b::MovableBall, balls::Vector{MovableBall{N,T}}) where {N,T} =
+overlap(b::MovableBall{N}, balls::Vector{<:MovableBall{N}}) where {N} =
     any(overlap.(Ref(b), balls))
 
 
@@ -34,8 +35,8 @@ place a disc at a time and check that it doesn't overlap with any previously pla
 
 Generates allowed ball positions and uniform velocities.
 """
-function initial_condition!(balls::Vector{MovableBall{N,T}}, table;
-		lower=table.lower, upper=table.upper) where {N,T}
+function initial_condition!(balls::Vector{<:MovableBall{N}}, table;
+		lower=table.lower, upper=table.upper) where {N}
 
 	## TODO: Check that initial condition is OK with respect to planes
 
@@ -241,3 +242,33 @@ end
 using Makie
 visualize_3d(states, sleep_step=0.001, lower=table.lower, upper=table.upper)
 =#
+
+
+
+
+## construct new simulation with state vector of new type:
+
+function HardSphereSimulation(simulation::HardSphereSimulation, state)
+
+	fluid = HardSphereFluid(simulation.fluid, state)
+
+	collision_type = simulation.collision_type
+	flow_type = simulation.flow_type
+	event_handler = AllToAll(fluid, flow_type)
+	# TODO: Not just AllToAll here
+
+	return HardSphereSimulation(fluid,
+					event_handler, flow_type, collision_type)
+end
+
+
+state(simulation::HardSphereSimulation) = state(simulation.fluid)
+
+
+function update!(simulation::HardSphereSimulation, state)
+	update!(simulation.fluid, state)
+	# this changes only tangent vectors, so nothing should need to change
+	# at the level of collisions
+
+	# TODO: This is not a good name
+end

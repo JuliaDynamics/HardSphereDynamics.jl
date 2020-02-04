@@ -1,14 +1,15 @@
 
 struct FreeFlow <: AbstractFlowDynamics end
 
-
+# TODO: Take care of type stability
+# How can we know what type collision_time returns?
 
 function collision_time(b::MovableBall{N}, Π::FixedPlane{N}, ::FreeFlow) where {N}
     @unpack r, x, v = b
     @unpack n, p = Π
 
     if v ⋅ n < 0  # travelling in wrong direction
-        return Inf
+        return eltype(x)(Inf)  # convert to correct type
     end
 
     return (-r - (x - p)⋅n) / (v ⋅ n)
@@ -22,7 +23,7 @@ function collision_time(b1::MovableBall{N}, b2::MovableBall{N}, ::FreeFlow) wher
 
     b = Δx⋅Δv
 
-    b > 0 && return Inf  # moving away from one another
+    b > 0 && return eltype(b1.x)(Inf)  # moving away from one another
 
 
     a = normsq(Δv)
@@ -41,7 +42,7 @@ function collision_time(b1::MovableBall{N}, b2::MovableBall{N}, ::FreeFlow) wher
         end
     end
 
-    return Inf   # no collision
+    return eltype(b1.x)(Inf)   # no collision
 end
 
 

@@ -15,8 +15,8 @@ mutable struct HardSphereSimulation{
 end
 
 # TODO: Fix type of current_time
-HardSphereSimulation(fluid::HardSphereFluid{N}, event_handler, flow_dynamics, collision_dynamics) where {N,T}=
-	HardSphereSimulation(fluid, event_handler, flow_dynamics, collision_dynamics, zero(Float64))
+HardSphereSimulation(fluid::HardSphereFluid{N}, event_handler::AbstractEventHandler{T}, flow_dynamics, collision_dynamics) where {N,T}=
+	HardSphereSimulation(fluid, event_handler, flow_dynamics, collision_dynamics, zero(T))
 
 
 
@@ -177,9 +177,9 @@ function evolve!(simulation::HardSphereSimulation{N,T}, times) where {N,T}
 	@unpack fluid, flow_dynamics, collision_dynamics, event_handler = simulation
 
 	states = [deepcopy(fluid.balls)]
-	ts = [0.0]
 
-	current_t = 0.0
+	current_t = zero(event_handler.next_collision_time)
+	ts = [current_t]
 
 	for t in times
 		flow!(simulation, t - current_t)
@@ -203,47 +203,6 @@ spaced by `δt`.
 evolve!(simulation::HardSphereSimulation, δt, final_time) = evolve!(simulation, δt:δt:final_time)
 
 
-#=
-# states, times, collision_types = evolve!(simulation, 100);
-
-
-using StaticArrays
-
-table = HardSphereDynamics.RectangularBox(SA[-0.5, -0.5, -10.0],
-					SA[+0.5, +0.5, +10.0])
-
-fluid = HardSphereFluid{3,Float64}(table, 100, 0.05)
-initial_condition!(fluid)
-# flow_type = FreeFlow()
-flow_type = ExternalFieldFlow(SA[0.0, 0.0, -1.0])
-
-function run_simulation(N, r)
-
-	table = HardSphereDynamics.RectangularBox(SA[-0.5, -0.5, -1.0],
-					SA[+0.5, +0.5, +3.0])
-
-	fluid = HardSphereFluid{3,Float64}(table, N, r)
-
-	initial_condition!(fluid, lower=table.lower, upper=-table.lower)
-	collision_type = ElasticCollision()
-
-	flow_type = ExternalFieldFlow(SA[0.0, 0.0, -10.0])
-	event_handler = AllToAll(fluid, flow_type)
-
-	simulation =  HardSphereSimulation(
-		fluid, event_handler, flow_type, collision_type);
-
-	states, times = evolve!(simulation, 0.01, 100);
-
-	visualize_3d(states, sleep_step=0.005, lower=table.lower, upper=-table.lower)
-end
-
-
-using Makie
-visualize_3d(states, sleep_step=0.001, lower=table.lower, upper=table.upper)
-=#
-
-
 
 
 ## construct new simulation with state vector of new type:
@@ -252,13 +211,13 @@ function HardSphereSimulation(simulation::HardSphereSimulation, state)
 
 	fluid = HardSphereFluid(simulation.fluid, state)
 
-	collision_type = simulation.collision_type
-	flow_type = simulation.flow_type
-	event_handler = AllToAll(fluid, flow_type)
+	collision_dynamics = simulation.collision_dynamics
+	flow_dynamics = simulation.flow_dynamics
+	event_handler = AllToAll(fluid, flow_dynamics)
 	# TODO: Not just AllToAll here
 
 	return HardSphereSimulation(fluid,
-					event_handler, flow_type, collision_type)
+					event_handler, flow_dynamics, collision_dynamics)
 end
 
 

@@ -14,13 +14,14 @@ end
 
 normal(p::FixedPlane, x) = p.n
 
+abstract type Table{N,T} end  # billiard table
 
 """
 "Rectangular" box in N dimensions.
 
 `lower` and `upper` contain the lower and upper bounds in each dimension.
 """
-struct RectangularBox{N,T}
+struct RectangularBox{N,T} <: Table{N,T}
     lower::SVector{N,T}
     upper::SVector{N,T}
     walls::Vector{FixedPlane{N,T}}

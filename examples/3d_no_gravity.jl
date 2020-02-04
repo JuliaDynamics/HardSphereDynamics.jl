@@ -3,7 +3,7 @@ using HardSphereDynamics, StaticArrays
 table = HardSphereDynamics.RectangularBox(SA[-0.5, -0.5, -0.5],
                                           SA[+0.5, +0.5, +0.5])
 
-N, r = 10, 0.1
+N, r = 100, 0.05
 fluid = HardSphereFluid{3,Float64}(table, N, r)
 initial_condition!(fluid, lower=table.lower, upper=-table.lower)
 

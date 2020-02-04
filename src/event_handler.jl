@@ -1,6 +1,6 @@
-abstract type AbstractEventHandler end
+abstract type AbstractEventHandler{T} end
 
-mutable struct AllToAll{T} <: AbstractEventHandler
+mutable struct AllToAll{T} <: AbstractEventHandler{T}
     next_collision_time::T
     partner1::Int
     partner2::Int
@@ -9,8 +9,8 @@ end
 
 AllToAll{T}() where {T} = AllToAll{T}(0, -1, -1, :none)
 
-function AllToAll(fluid::HardSphereFluid{N,T}, flow_type) where {N,T}
-	event_handler = AllToAll{T}()
+function AllToAll(fluid::HardSphereFluid{N,T1,T2,T3}, flow_type) where {N,T1,T2,T3}
+	event_handler = AllToAll{T2}()
 	find_collision!(event_handler, fluid, flow_type)
 
 	return event_handler

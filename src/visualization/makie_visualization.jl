@@ -92,8 +92,17 @@ visualize_3d(fluid::HardSphereFluid, positions, velocities;
     visualize_3d(positions, velocities, [ball.r for ball in fluid.balls]; kw...)
 
 
-function visualize_3d(history::Vector{Vector{MovableBall{N,T}}};
-    kw...) where {N,T}
+function visualize_2d(history::Vector{<:Vector{<:MovableBall{2}}};
+    kw...)
+    positions = [ [ball.x for ball in states] for states in history ]
+    velocities = [ [ball.v for ball in states] for states in history ]
+    radii = [ball.r for ball in history[1]]
+
+    visualize_2d(positions, velocities, radii; kw...)
+end
+
+function visualize_3d(history::Vector{<:Vector{<:MovableBall{3}}};
+    kw...)
     positions = [ [ball.x for ball in states] for states in history ]
     velocities = [ [ball.v for ball in states] for states in history ]
     radii = [ball.r for ball in history[1]]

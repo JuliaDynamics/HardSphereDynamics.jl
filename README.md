@@ -7,6 +7,8 @@ Simple visualizations in 2D and 3D using Makie are also provided.
 
 ## Example usage
 
+The following is with the as-yet-unreleased `master` branch:
+
 ```julia
 
 using HardSphereDynamics, StaticArrays

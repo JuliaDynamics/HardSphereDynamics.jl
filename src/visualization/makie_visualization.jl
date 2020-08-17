@@ -1,7 +1,7 @@
 using HardSphereDynamics
 
 using .AbstractPlotting  # . is for Requires.jl
-using .AbstractPlotting.GeometryTypes
+# using .AbstractPlotting.GeometryTypes
 # using AbstractPlotting
 using .AbstractPlotting.Colors
 

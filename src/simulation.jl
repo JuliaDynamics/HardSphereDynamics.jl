@@ -36,24 +36,31 @@ Generates allowed ball positions and uniform velocities.
 function initial_condition!(balls::Vector{MovableBall{N,T}}, table;
 		lower=table.lower, upper=table.upper) where {N,T}
 
-	## TODO: Check that initial condition is OK with respect to planes
+	count = 0
+	found = false 
 
-    U = Uniform.(lower .+ balls[1].r, upper .- balls[1].r)
-    balls[1].x = rand.(U)
+	num_trials = 10^5
 
-    for i = 2:length(balls)
-        U = Uniform.(lower .+ balls[i].r, upper .- balls[i].r)
-        balls[i].x = rand.(U)
+	while count < num_trials && !found 
+		found = true
+		
+		U = Uniform.(lower .+ balls[1].r, upper .- balls[1].r)
+		balls[1].x = rand.(U)
 
-        count = 0
+		for i = 2:length(balls)
+			U = Uniform.(lower .+ balls[i].r, upper .- balls[i].r)
+			balls[i].x = rand.(U)
 
-        while overlap(balls[i], balls[1:i-1])
-            balls[i].x = rand.(U)
-            count += 1
+			if overlap(balls[i], balls[1:i-1])
+				found = false
+				break
+			end
+		end
 
-            count > 10^5 && error("Unable to place disc $i")
-        end
-    end
+		count += 1
+	end
+
+	count ≥ num_trials && error("Unable to generate non-overlapping initial condition")
 
 
     # generate velocities with sum(v_i^2) = 1:f

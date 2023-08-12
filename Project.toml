@@ -1,7 +1,7 @@
 name = "HardSphereDynamics"
 uuid = "2cbf6e9d-eec9-4262-aa18-cb9280186e6b"
 authors = ["David P. Sanders <dpsanders@gmail.com>"]
-version = "0.1.1"
+version = "0.1.2"
 
 [deps]
 Distributions = "31c24e10-a181-5473-b8eb-7969acd0382f"
@@ -15,6 +15,6 @@ StatsBase = "2913bbd2-ae8a-5f71-8c99-4fb6c76f3a91"
 Distributions = "0.21, 0.22"
 Parameters = "0.12"
 Requires = "0.5, 1.0"
-StaticArrays = "0.10, 0.11, 0.12"
+StaticArrays = "0.10, 0.11, 0.12, 1"
 StatsBase = "0.32"
 julia = "1"
